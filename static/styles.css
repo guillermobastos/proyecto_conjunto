@@ -20,30 +20,33 @@ th {
 }
 
 /* Estilos para las filas de noticias */
-tr.classification-0
-{
-    background-color: #d11b2a; /* Fondo rojo claro */
+table tbody tr.classification-0 {
+    background-color: #d11b2a; /* Fondo rojo oscuro */
     color: #fff; /* Texto blanco para contraste */
 }
-tr.classification-1 {
-    background-color: #c1852c; /* Fondo rojo claro */
-}
-tr.classification-2 {
-    background-color: #a7c028; /* Fondo rojo claro */
+
+table tbody tr.classification-1 {
+    background-color: #c1852c; /* Fondo naranja claro */
 }
 
-tr.classification-3 {
+table tbody tr.classification-2 {
+    background-color: #a7c028; /* Fondo amarillo claro */
+}
+
+table tbody tr.classification-3 {
     background-color: #f5f5f5; /* Fondo gris claro */
 }
 
-tr.classification-4 {
+table tbody tr.classification-4 {
     background-color: #65f486; /* Fondo verde claro */
 }
-tr.classification-5 {
-    background-color: #27a444; /* Fondo verde claro */
+
+table tbody tr.classification-5 {
+    background-color: #27a444; /* Fondo verde oscuro */
 }
-tr.classification-6 {
-    background-color: #0e6e25; /* Fondo verde claro */
+
+table tbody tr.classification-6 {
+    background-color: #0e6e25; /* Fondo verde muy oscuro */
     color: #fff; /* Texto blanco para contraste */
 }
 

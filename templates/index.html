@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noticias por Ticker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Filtrar Noticias por Ticker</h1>
@@ -21,7 +22,7 @@
 
     <h2>Noticias para {{ ticker_seleccionado }}</h2>
 
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -35,7 +36,7 @@
         </thead>
         <tbody>
             {% for noticia in noticias %}
-                <tr>
+                <tr class="classification-{{ noticia.clasificacion }}">
                     <td>{{ noticia.id }}</td>
                     <td>{{ noticia.ticker }}</td>
                     <td>{{ noticia.titulo }}</td>

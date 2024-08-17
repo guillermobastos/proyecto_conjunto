@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Noticias</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx">
+        <input type="submit" value="Upload">
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Impacto</th>
+                <th>Clasificación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for noticia in noticias %}
+            <tr class="classification-{{ noticia.clasificacion }}">
+                <td>{{ noticia.ticker }}</td>
+                <td>{{ noticia.titulo }}</td>
+                <td>{{ noticia.descripcion }}</td>
+                <td>{{ noticia.fecha }}</td>
+                <td>{{ "%.3f"|format(noticia.impacto) }}</td>
+                <td>{{ noticia.clasificacion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

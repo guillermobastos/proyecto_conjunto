@@ -1,0 +1,53 @@
+/* Estilos generales para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center; /* Centra el texto horizontalmente */
+    vertical-align: middle; /* Centra el texto verticalmente */
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+/* Estilos para las filas de noticias */
+tr.classification-0
+{
+    background-color: #d11b2a; /* Fondo rojo claro */
+    color: #fff; /* Texto blanco para contraste */
+}
+tr.classification-1 {
+    background-color: #c1852c; /* Fondo rojo claro */
+}
+tr.classification-2 {
+    background-color: #a7c028; /* Fondo rojo claro */
+}
+
+tr.classification-3 {
+    background-color: #f5f5f5; /* Fondo gris claro */
+}
+
+tr.classification-4 {
+    background-color: #65f486; /* Fondo verde claro */
+}
+tr.classification-5 {
+    background-color: #27a444; /* Fondo verde claro */
+}
+tr.classification-6 {
+    background-color: #0e6e25; /* Fondo verde claro */
+    color: #fff; /* Texto blanco para contraste */
+}
+
+/* Estilo del formulario de carga de archivos */
+form {
+    margin-bottom: 20px;
+}

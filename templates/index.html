@@ -1,20 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noticias</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Noticias por Ticker</title>
 </head>
 <body>
-    <h1>Noticias</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".xlsx">
-        <input type="submit" value="Upload">
+    <h1>Filtrar Noticias por Ticker</h1>
+
+    <form method="get" action="/">
+        <label for="ticker">Selecciona un Ticker:</label>
+        <select name="ticker" id="ticker">
+            <option value="">--Selecciona un Ticker--</option>
+            {% for ticker in tickers %}
+                <option value="{{ ticker }}" {% if ticker == ticker_seleccionado %}selected{% endif %}>{{ ticker }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
     </form>
-    <table>
+
+    <h2>Noticias para {{ ticker_seleccionado }}</h2>
+
+    <table border="1">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Ticker</th>
                 <th>Título</th>
                 <th>Descripción</th>
@@ -25,14 +35,15 @@
         </thead>
         <tbody>
             {% for noticia in noticias %}
-            <tr class="classification-{{ noticia.clasificacion }}">
-                <td>{{ noticia.ticker }}</td>
-                <td>{{ noticia.titulo }}</td>
-                <td>{{ noticia.descripcion }}</td>
-                <td>{{ noticia.fecha }}</td>
-                <td>{{ "%.3f"|format(noticia.impacto) }}</td>
-                <td>{{ noticia.clasificacion }}</td>
-            </tr>
+                <tr>
+                    <td>{{ noticia.id }}</td>
+                    <td>{{ noticia.ticker }}</td>
+                    <td>{{ noticia.titulo }}</td>
+                    <td>{{ noticia.descripcion }}</td>
+                    <td>{{ noticia.fecha }}</td>
+                    <td>{{ noticia.impacto }}</td>
+                    <td>{{ noticia.clasificacion }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

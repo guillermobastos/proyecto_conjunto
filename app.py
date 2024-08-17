@@ -1,58 +1,63 @@
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-import pandas as pd
+from sqlalchemy import Table
+import os
+import sys
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
+
+# Agrega la carpeta raíz del proyecto al sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from database_config import engine, metadata 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///noticias.db'  # Usando SQLite para simplicidad
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
-class Noticia(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    ticker = db.Column(db.String(10), nullable=False)
-    titulo = db.Column(db.String(255), nullable=False)
-    descripcion = db.Column(db.Text, nullable=False)
-    fecha = db.Column(db.String(19), nullable=False)
-    impacto = db.Column(db.Float, nullable=False)
-    clasificacion = db.Column(db.Integer, nullable=False)
-
-    def __repr__(self):
-        return f'<Noticia {self.titulo}>'
-
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    noticias = Noticia.query.all()
-    return render_template('index.html', noticias=noticias)
+    # Obtener la lista de tickers disponibles en la base de datos
+    tickers = obtener_lista_tickers()
+    ticker_seleccionado = request.args.get('ticker')
+    noticias = []
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'file' not in request.files:
-        return 'No file uploaded', 400
+    if ticker_seleccionado:
+        # Filtrar las noticias por el ticker seleccionado
+        noticias = obtener_noticias_por_ticker(ticker_seleccionado)
 
-    file = request.files['file']
-    if file.filename == '':
-        return 'No selected file', 400
+    return render_template('index.html', tickers=tickers, ticker_seleccionado=ticker_seleccionado, noticias=noticias)
 
-    df = pd.read_excel(file)
+def obtener_lista_tickers():
+    # Obtener la lista de tablas en la base de datos
+    metadata.reflect(bind=engine)
+    tickers = [table.name.replace('noticias_', '') for table in metadata.tables.values()]
+    return tickers
+
+def obtener_noticias_por_ticker(ticker):
+    table_name = f"noticias_{ticker}"
+    table = Table(table_name, metadata, autoload_with=engine)
     
-    # Reemplaza NaN en la columna 'Descripción' con una cadena vacía
-    df['Descripción'].fillna('', inplace=True)
+    # Usar una sesión para manejar la consulta
+    Session = sessionmaker(bind=engine)
+    session = Session()
     
-    for _, row in df.iterrows():
-        noticia = Noticia(
-            ticker=row['Ticker'],
-            titulo=row['Título'],
-            descripcion=row['Descripción'],
-            fecha=row['Fecha'],
-            impacto=row['Impacto'],
-            clasificacion=row['Clasificación']
-        )
-        db.session.add(noticia)
+    try:
+        # Ejecutar la consulta
+        select_stmt = table.select()
+        result = session.execute(select_stmt)
+        
+        # Obtener nombres de columnas
+        column_names = result.keys()
+        
+        # Convertir filas en diccionarios usando nombres de columnas
+        noticias = [dict(zip(column_names, row)) for row in result]
+        
+    except SQLAlchemyError as e:
+        print(f"Error al obtener noticias para {ticker}: {e}")
+        noticias = []
+
+    finally:
+        session.close()
     
-    db.session.commit()
-    return 'File successfully uploaded', 200
+    return noticias
+
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Crea las tablas en la base de datos
     app.run(debug=True)

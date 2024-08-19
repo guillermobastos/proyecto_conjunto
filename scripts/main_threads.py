@@ -1,5 +1,7 @@
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import pandas as pd
 from sqlalchemy import Column, Float, Integer, String, Table
 from sqlalchemy.exc import SQLAlchemyError
@@ -7,14 +9,11 @@ from sqlalchemy.exc import SQLAlchemyError
 # Agrega la carpeta raíz del proyecto al sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from database_config import engine, metadata 
-from src.sentiment_analysis import (
-    clasificar_noticias,
-    entrenar_modelo,
-    evolucion_posterior_noticia,
-    obtener_datos_accion,
-    obtener_noticias,
-)
+from database_config import engine, metadata
+from src.sentiment_analysis import (clasificar_noticias, entrenar_modelo,
+                                    evolucion_posterior_noticia,
+                                    obtener_datos_accion, obtener_noticias)
+
 
 def leer_tickers(desde_archivo):
     """Lee los tickers desde un archivo CSV y devuelve una lista de tickers."""
@@ -116,10 +115,26 @@ def guardar_datos_en_tabla(df_resultados_ticker, table):
                         clasificacion=row["clasificacion"],
                     )
                 )
-                conn.commit() # Muy importante para guardar los datos y se actualice
+                conn.commit()  # Muy importante para guardar los datos y se actualice
         print(f"Resultados guardados en la base de datos.")
     except SQLAlchemyError as e:
         print(f"Error al guardar los resultados: {e}")
+
+def procesar_y_guardar_ticker(ticker):
+    """Procesa el ticker y guarda los resultados en la base de datos."""
+    # Crear tabla para el ticker
+    table = crear_tabla(ticker)
+
+    # Procesar noticias para el ticker
+    resultados_ticker = procesar_ticker(ticker)
+
+    if resultados_ticker:
+        df_resultados_ticker = pd.DataFrame(resultados_ticker)
+        # Filtrar columnas vacías o con solo NA
+        df_resultados_ticker = df_resultados_ticker.dropna(how="all", axis=1)
+
+        # Guardar resultados en la tabla del ticker
+        guardar_datos_en_tabla(df_resultados_ticker, table)
 
 def main():
     """Función principal para ejecutar el procesamiento de tickers y guardar los resultados en la base de datos."""
@@ -133,29 +148,14 @@ def main():
         print("No se encontraron tickers en el archivo.")
         return
 
-    for ticker in tickers:
-        # Crear tabla para el ticker
-        table = crear_tabla(ticker)
-
-        # Procesar noticias para el ticker
-        resultados_ticker = procesar_ticker(ticker)
-
-        if resultados_ticker:
-            df_resultados_ticker = pd.DataFrame(resultados_ticker)
-            # Filtrar columnas vacías o con solo NA
-            df_resultados_ticker = df_resultados_ticker.dropna(how="all", axis=1)
-
-            # Guardar resultados en la tabla del ticker
-            guardar_datos_en_tabla(df_resultados_ticker, table)
-
-def prueba():
-    """Lee los tickers desde un archivo CSV y devuelve una lista de tickers."""
-    try:
-        df_tickers = pd.read_csv(os.path.join("data", "tickers", "tickers.csv"))
-        return df_tickers["Ticker"].tolist()
-    except Exception as e:
-        print(f"Error al leer el archivo de tickers: {e}")
-        return []                 
+    # Usar ThreadPoolExecutor para procesar los tickers en paralelo
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(procesar_y_guardar_ticker, ticker) for ticker in tickers]
+        for future in as_completed(futures):
+            try:
+                future.result()  # Obtiene el resultado de la tarea, para manejar excepciones si ocurren
+            except Exception as e:
+                print(f"Error en el procesamiento de ticker: {e}")
 
 if __name__ == "__main__": 
     main()

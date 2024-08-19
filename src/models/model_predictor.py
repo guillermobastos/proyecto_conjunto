@@ -1,27 +1,19 @@
-def predecir_impacto_noticia_mejorado(modelo, texto_noticia, datos_tecnicos, datos_financieros):
-    """
-    Predice el impacto de una nueva noticia utilizando el modelo entrenado y datos adicionales.
-    
-    Args:
-        modelo: El modelo entrenado.
-        texto_noticia (str): Texto de la nueva noticia.
-        datos_tecnicos (dict): Indicadores técnicos del ticker.
-        datos_financieros (dict): Indicadores financieros de la empresa.
-    
-    Returns:
-        str: La predicción del impacto de la noticia.
-    """
-    prediccion = modelo.predict([texto_noticia])
-    
-    # Ajustar la predicción considerando los datos técnicos y financieros
-    if datos_tecnicos['RSI'] > 70:
-        prediccion -= 1
-    elif datos_tecnicos['RSI'] < 30:
-        prediccion += 1
+from joblib import load
+import os
 
-    if datos_financieros['PER'] > 30:
-        prediccion -= 1
-    elif datos_financieros['PER'] < 10:
-        prediccion += 1
+# Función para predecir la clasificación de una nueva noticia
+def predecir_clasificacion(nueva_descripcion, ticker, model_dir='models'):
+    modelo_path = os.path.join(model_dir, f'{ticker}_model.joblib')
+    vectorizer_path = os.path.join(model_dir, f'{ticker}_vectorizer.joblib')
+    
+    modelo = load(modelo_path)
+    vectorizer = load(vectorizer_path)
+    
+    nueva_descripcion_vec = vectorizer.transform([nueva_descripcion])
+    prediccion = modelo.predict(nueva_descripcion_vec)
+    
+    return prediccion
 
-    return prediccion[0]
+# Ejemplo de uso
+prediccion = predecir_clasificacion("Microsoft announces new AI-powered tools for developers.", 'MSFT')
+print(f'Clasificación predicha: {prediccion[0]}')

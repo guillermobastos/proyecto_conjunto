@@ -24,9 +24,11 @@ def obtener_noticias(ticker):
     Returns:
         list: Lista de noticias obtenidas.
     """
+    fecha_from = (datetime.now() - timedelta(days=6)).strftime("%Y-%m-%d")
     fecha_hoy = datetime.now().strftime('%Y-%m-%d')
 
-    noticias = finnhub_client.company_news(ticker, _from=fecha_hoy, to=fecha_hoy)
+    # noticias = finnhub_client.company_news(ticker, _from=fecha_hoy, to=fecha_hoy)
+    noticias = finnhub_client.company_news(ticker, _from=fecha_from, to=fecha_hoy)
     
     noticias_filtradas = []
     for noticia in noticias:
@@ -105,9 +107,9 @@ def clasificar_noticias(noticias, df):
             clasificacion = 0  # Muy Negativa
         elif -10 < impacto <= -5:
             clasificacion = 1  # Negativa
-        elif -5 < impacto <= -1:
+        elif -5 < impacto <= -0.3:
             clasificacion = 2  # Ligeramente Negativa
-        elif -1 < impacto <= 1:
+        elif -0.3 < impacto <= 1:
             clasificacion = 3  # Neutra
         elif 1 < impacto <= 5:
             clasificacion = 4  # Ligeramente Positiva

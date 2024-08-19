@@ -17,6 +17,14 @@
                 <option value="{{ ticker }}" {% if ticker == ticker_seleccionado %}selected{% endif %}>{{ ticker }}</option>
             {% endfor %}
         </select>
+
+        <label for="orden">Ordenar por Impacto:</label>
+        <select name="orden" id="orden">
+            <option value="">--Sin Orden--</option>
+            <option value="desc" {% if request.args.get('orden') == 'desc' %}selected{% endif %}>Descendente</option>
+            <option value="asc" {% if request.args.get('orden') == 'asc' %}selected{% endif %}>Ascendente</option>
+        </select>
+
         <button type="submit">Filtrar</button>
     </form>
 

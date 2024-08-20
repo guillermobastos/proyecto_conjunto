@@ -1,56 +1,78 @@
-/* Estilos generales para la tabla */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+/* Estilos personalizados */
+
+body {
+    background-color: #f8f9fa;
 }
 
-table, th, td {
-    border: 1px solid #ddd;
+h1, h2 {
+    color: #343a40;
 }
 
-th, td {
-    padding: 8px;
-    text-align: center; /* Centra el texto horizontalmente */
-    vertical-align: middle; /* Centra el texto verticalmente */
+/* Estilo de la tabla */
+.table {
+    margin-bottom: 0;
 }
 
-th {
-    background-color: #f4f4f4;
+/* Estilos para las filas según la clasificación */
+.table tbody tr.classification-0 td {
+    background-color: #d11b2a !important; /* Fondo rojo oscuro */
+    color: #fff !important; /* Texto blanco para contraste */
 }
 
-/* Estilos para las filas de noticias */
-table tbody tr.classification-0 {
-    background-color: #d11b2a; /* Fondo rojo oscuro */
-    color: #fff; /* Texto blanco para contraste */
+.table tbody tr.classification-1 td {
+    background-color: #af3a14 !important; /* Fondo naranja claro */
 }
 
-table tbody tr.classification-1 {
-    background-color: #c1852c; /* Fondo naranja claro */
+.table tbody tr.classification-2 td {
+    background-color: #d49c23 !important; /* Fondo amarillo claro */
 }
 
-table tbody tr.classification-2 {
-    background-color: #a7c028; /* Fondo amarillo claro */
+.table tbody tr.classification-3 td {
+    background-color: #f5f5f5 !important; /* Fondo gris claro */
 }
 
-table tbody tr.classification-3 {
-    background-color: #f5f5f5; /* Fondo gris claro */
+.table tbody tr.classification-4 td {
+    background-color: #0a571c !important; /* Fondo verde claro */
 }
 
-table tbody tr.classification-4 {
-    background-color: #65f486; /* Fondo verde claro */
+.table tbody tr.classification-5 td {
+    background-color: #35c055 !important; /* Fondo verde oscuro */
+    color: #fff !important; /* Texto blanco para contraste */
 }
 
-table tbody tr.classification-5 {
-    background-color: #27a444; /* Fondo verde oscuro */
+.table tbody tr.classification-6 td {
+    background-color: #45ef6d !important; /* Fondo verde muy oscuro */
+    color: #fff !important; /* Texto blanco para contraste */
 }
 
-table tbody tr.classification-6 {
-    background-color: #0e6e25; /* Fondo verde muy oscuro */
-    color: #fff; /* Texto blanco para contraste */
+/* Ajuste de paddings y bordes */
+.table th, .table td {
+    padding: 12px;
 }
 
-/* Estilo del formulario de carga de archivos */
-form {
-    margin-bottom: 20px;
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo del formulario */
+.form-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.form-select {
+    border-radius: 0.25rem;
+}
+
+/* Botón */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
 }

@@ -24,7 +24,7 @@ def obtener_noticias(ticker):
     Returns:
         list: Lista de noticias obtenidas.
     """
-    fecha_from = (datetime.now() - timedelta(days=6)).strftime("%Y-%m-%d")
+    fecha_from = (datetime.now() - timedelta(days=120)).strftime("%Y-%m-%d")
     fecha_hoy = datetime.now().strftime('%Y-%m-%d')
 
     # noticias = finnhub_client.company_news(ticker, _from=fecha_hoy, to=fecha_hoy)

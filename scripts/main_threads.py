@@ -1,7 +1,6 @@
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
 import pandas as pd
 from sqlalchemy import Column, Float, Integer, String, Table
 from sqlalchemy.exc import SQLAlchemyError
